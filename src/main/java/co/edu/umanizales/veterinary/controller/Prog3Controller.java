@@ -7,6 +7,6 @@ import org. springframework.web.bind.annotation.RestController;
 public class Prog3Controller {
    @GetMapping
     public String getHello(){
-        return "Hola campeones y campeonas";
+        return "Hola campeones y campeon@s";
     }
 }

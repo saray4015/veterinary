@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: veterinary-service
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+# Configuración de logging
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    co.edu.umanizales.veterinary: DEBUG
+  file:
+    name: logs/application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Configuración de archivos CSV
+app:
+  data:
+    path: data/
+    files:
+      owners: owners.csv
+      veterinarians: veterinarians.csv
+      pets: pets.csv
+      appointments: appointments.csv
+      medical_records: medical_records.csv
+      treatments: treatments.csv
+      services: services.csv
+      medications: medications.csv
+      invoices: invoices.csv
+      specialties: specialties.csv
+
+# Configuración de Swagger/OpenAPI (opcional)
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

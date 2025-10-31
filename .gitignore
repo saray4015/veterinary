@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Data Files ###
+data/
+logs/
+*.csv
+
+### Environment ###
+.env
+.env.local

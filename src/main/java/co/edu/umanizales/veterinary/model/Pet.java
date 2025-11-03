@@ -15,7 +15,7 @@ import java.util.List;
 public class Pet {
     private String id;
     private String name;
-    private AnimalSpecies species;
+    private AnimalSpecies specie;
     private String breed;
     private LocalDate birthDate;
     private Owner owner;

@@ -38,7 +38,7 @@ public class PetService extends BaseServiceImpl<Pet> {
 
     public List<Pet> findBySpecies(AnimalSpecies species) {
         return entities.stream()
-                .filter(pet -> species == pet.getSpecies())
+                .filter(pet -> species == pet.getSpecie())
                 .toList();
     }
 

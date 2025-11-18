@@ -33,6 +33,7 @@ public class CSVManager<T> {
             CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader)
                     .withMappingStrategy(strategy)
                     .withIgnoreLeadingWhiteSpace(true)
+                    .withThrowExceptions(false)
                     .build();
             
             return csvToBean.parse();

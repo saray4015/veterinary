@@ -16,6 +16,12 @@ public class PetService extends BaseServiceImpl<Pet> {
     public PetService(OwnerService ownerService) {
         super("pets.csv");
         this.ownerService = ownerService;
+        // Rehidratar referencias de dueño a partir de ownerId después de cargar desde CSV
+        for (Pet pet : this.entities) {
+            if (pet.getOwner() == null && pet.getOwnerId() != null) {
+                ownerService.findById(pet.getOwnerId()).ifPresent(pet::setOwner);
+            }
+        }
     }
 
     @Override
@@ -25,13 +31,21 @@ public class PetService extends BaseServiceImpl<Pet> {
 
     @Override
     public Pet save(Pet pet) {
-        // Verificar que el dueño existe
+        // Verificar que el dueño existe usando owner o ownerId
+        String ownerId = null;
         if (pet.getOwner() != null && pet.getOwner().getId() != null) {
-            Optional<Owner> owner = ownerService.findById(pet.getOwner().getId());
+            ownerId = pet.getOwner().getId();
+        } else if (pet.getOwnerId() != null) {
+            ownerId = pet.getOwnerId();
+        }
+
+        if (ownerId != null) {
+            Optional<Owner> owner = ownerService.findById(ownerId);
             if (owner.isPresent()) {
                 pet.setOwner(owner.get());
                 return super.save(pet);
             }
+            throw new IllegalArgumentException("Owner not found: " + ownerId);
         }
         throw new IllegalArgumentException("Owner is required for pet");
     }
@@ -44,7 +58,7 @@ public class PetService extends BaseServiceImpl<Pet> {
 
     public List<Pet> findByOwnerId(String ownerId) {
         return entities.stream()
-                .filter(pet -> ownerId.equals(pet.getOwner().getId()))
+                .filter(pet -> ownerId.equals(pet.getOwnerId()))
                 .toList();
     }
 }

@@ -1,0 +1,345 @@
+{
+  "info": {
+    "name": "Veterinary API (Full - con ejemplos y curl)",
+    "_postman_id": "9e6c8c2f-7c3e-4d9d-97a0-2f8f4a1d7e11",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080"},
+    {"key": "json", "value": "application/json"}
+  ],
+  "item": [
+    {
+      "name": "Owners",
+      "item": [
+        {
+          "name": "Create owner",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"own-001\",\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+57 3001234567\",\n  \"address\": \"Calle 123 #45-67\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/owners", "host": ["{{baseUrl}}"], "path": ["api","owners"]},
+            "description": "curl -X POST '{{baseUrl}}/api/owners' -H 'Content-Type: application/json' -d '{\n  \"id\": \"own-001\",\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+57 3001234567\",\n  \"address\": \"Calle 123 #45-67\"\n}'"
+          }
+        },
+        {
+          "name": "Update owner",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Johnathan Doe\",\n  \"email\": \"johnathan.doe@example.com\",\n  \"phone\": \"+57 3009876543\",\n  \"address\": \"Av 1 #2-34\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/owners/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","owners","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/owners/own-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Johnathan Doe\",\n  \"email\": \"johnathan.doe@example.com\",\n  \"phone\": \"+57 3009876543\",\n  \"address\": \"Av 1 #2-34\"\n}'"
+          }
+        },
+        {"name": "Get all owners", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/owners", "host": ["{{baseUrl}}"], "path": ["api","owners"]}, "description": "curl -X GET '{{baseUrl}}/api/owners'"}},
+        {"name": "Get owner by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/owners/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","owners","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/owners/own-001'"}},
+        {"name": "Delete owner", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/owners/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","owners","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/owners/own-001'"}}
+      ]
+    },
+
+    {
+      "name": "Pets",
+      "item": [
+        {
+          "name": "Create pet",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"pet-001\",\n  \"name\": \"Firulais\",\n  \"specie\": \"DOG\",\n  \"breed\": \"Labrador\",\n  \"birthDate\": \"2022-05-10\",\n  \"owner\": { \"id\": \"own-001\" }\n}"},
+            "url": {"raw": "{{baseUrl}}/api/pets", "host": ["{{baseUrl}}"], "path": ["api","pets"]},
+            "description": "curl -X POST '{{baseUrl}}/api/pets' -H 'Content-Type: application/json' -d '{\n  \"id\": \"pet-001\",\n  \"name\": \"Firulais\",\n  \"specie\": \"DOG\",\n  \"breed\": \"Labrador\",\n  \"birthDate\": \"2022-05-10\",\n  \"owner\": { \"id\": \"own-001\" }\n}'"
+          }
+        },
+        {
+          "name": "Update pet",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Firulais Jr\",\n  \"breed\": \"Labrador Retriever\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/pets/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","pets","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/pets/pet-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Firulais Jr\",\n  \"breed\": \"Labrador Retriever\"\n}'"
+          }
+        },
+        {"name": "Get all pets", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/pets", "host": ["{{baseUrl}}"], "path": ["api","pets"]}, "description": "curl -X GET '{{baseUrl}}/api/pets'"}},
+        {"name": "Get pet by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/pets/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","pets","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/pets/pet-001'"}},
+        {"name": "Get pets by species", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/pets/species/{{species}}", "host": ["{{baseUrl}}"], "path": ["api","pets","species","{{species}}"]}, "description": "curl -X GET '{{baseUrl}}/api/pets/species/DOG'"}},
+        {"name": "Get pets by owner", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/pets/owner/{{ownerId}}", "host": ["{{baseUrl}}"], "path": ["api","pets","owner","{{ownerId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/pets/owner/own-001'"}},
+        {"name": "Delete pet", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/pets/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","pets","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/pets/pet-001'"}}
+      ]
+    },
+
+    {
+      "name": "Veterinarians",
+      "item": [
+        {
+          "name": "Create veterinarian",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"vet-001\",\n  \"name\": \"Dra. Ana Perez\",\n  \"email\": \"ana.perez@example.com\",\n  \"phone\": \"+57 3011112222\",\n  \"address\": \"Cra 45 #67-89\",\n  \"licenseNumber\": \"LIC-12345\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/veterinarians", "host": ["{{baseUrl}}"], "path": ["api","veterinarians"]},
+            "description": "curl -X POST '{{baseUrl}}/api/veterinarians' -H 'Content-Type: application/json' -d '{\n  \"id\": \"vet-001\",\n  \"name\": \"Dra. Ana Perez\",\n  \"email\": \"ana.perez@example.com\",\n  \"phone\": \"+57 3011112222\",\n  \"address\": \"Cra 45 #67-89\",\n  \"licenseNumber\": \"LIC-12345\"\n}'"
+          }
+        },
+        {
+          "name": "Add specialty to veterinarian",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"spe-001\",\n  \"name\": \"Odontología\",\n  \"description\": \"Cuidado dental canino y felino\",\n  \"consultationFee\": 60000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/veterinarians/{{id}}/specialties", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","{{id}}","specialties"]},
+            "description": "curl -X POST '{{baseUrl}}/api/veterinarians/vet-001/specialties' -H 'Content-Type: application/json' -d '{\n  \"id\": \"spe-001\",\n  \"name\": \"Odontología\",\n  \"description\": \"Cuidado dental canino y felino\",\n  \"consultationFee\": 60000\n}'"
+          }
+        },
+        {
+          "name": "Update veterinarian",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Dra. Ana P.\",\n  \"email\": \"ana.p@example.com\",\n  \"phone\": \"+57 3010001111\",\n  \"address\": \"Cra 45 #67-89, consultorio 101\",\n  \"licenseNumber\": \"LIC-12345\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/veterinarians/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/veterinarians/vet-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Dra. Ana P.\",\n  \"email\": \"ana.p@example.com\",\n  \"phone\": \"+57 3010001111\",\n  \"address\": \"Cra 45 #67-89, consultorio 101\",\n  \"licenseNumber\": \"LIC-12345\"\n}'"
+          }
+        },
+        {"name": "Get all veterinarians", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/veterinarians", "host": ["{{baseUrl}}"], "path": ["api","veterinarians"]}, "description": "curl -X GET '{{baseUrl}}/api/veterinarians'"}},
+        {"name": "Get veterinarian by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/veterinarians/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/veterinarians/vet-001'"}},
+        {"name": "Get veterinarian by license", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/veterinarians/license/{{licenseNumber}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","license","{{licenseNumber}}"]}, "description": "curl -X GET '{{baseUrl}}/api/veterinarians/license/LIC-12345'"}},
+        {"name": "Get veterinarians by specialty", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/veterinarians/specialty/{{specialtyId}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","specialty","{{specialtyId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/veterinarians/specialty/spe-001'"}},
+        {"name": "Remove specialty from veterinarian", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/veterinarians/{{id}}/specialties/{{specialtyId}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","{{id}}","specialties","{{specialtyId}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/veterinarians/vet-001/specialties/spe-001'"}},
+        {"name": "Delete veterinarian", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/veterinarians/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","veterinarians","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/veterinarians/vet-001'"}}
+      ]
+    },
+
+    {
+      "name": "Specialties",
+      "item": [
+        {
+          "name": "Create specialty",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"spe-002\",\n  \"name\": \"Dermatología\",\n  \"description\": \"Piel y alergias\",\n  \"consultationFee\": 70000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/specialties", "host": ["{{baseUrl}}"], "path": ["api","specialties"]},
+            "description": "curl -X POST '{{baseUrl}}/api/specialties' -H 'Content-Type: application/json' -d '{\n  \"id\": \"spe-002\",\n  \"name\": \"Dermatología\",\n  \"description\": \"Piel y alergias\",\n  \"consultationFee\": 70000\n}'"
+          }
+        },
+        {
+          "name": "Update specialty",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Dermatología Avanzada\",\n  \"description\": \"Tratamientos avanzados de piel\",\n  \"consultationFee\": 90000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/specialties/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","specialties","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/specialties/spe-002' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Dermatología Avanzada\",\n  \"description\": \"Tratamientos avanzados de piel\",\n  \"consultationFee\": 90000\n}'"
+          }
+        },
+        {"name": "Get all specialties", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/specialties", "host": ["{{baseUrl}}"], "path": ["api","specialties"]}, "description": "curl -X GET '{{baseUrl}}/api/specialties'"}},
+        {"name": "Get specialty by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/specialties/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","specialties","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/specialties/spe-002'"}},
+        {"name": "Search specialties by name", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/specialties/search?name={{name}}", "host": ["{{baseUrl}}"], "path": ["api","specialties","search"], "query": [{"key": "name", "value": "{{name}}"}]}, "description": "curl -X GET '{{baseUrl}}/api/specialties/search?name=Derm'"}},
+        {"name": "Delete specialty", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/specialties/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","specialties","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/specialties/spe-002'"}}
+      ]
+    },
+
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Create service",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"srv-001\",\n  \"name\": \"Consulta general\",\n  \"description\": \"Revisión médica general\",\n  \"type\": \"CONSULTATION\",\n  \"baseCost\": 50000,\n  \"durationMinutes\": 30\n}"},
+            "url": {"raw": "{{baseUrl}}/api/services", "host": ["{{baseUrl}}"], "path": ["api","services"]},
+            "description": "curl -X POST '{{baseUrl}}/api/services' -H 'Content-Type: application/json' -d '{\n  \"id\": \"srv-001\",\n  \"name\": \"Consulta general\",\n  \"description\": \"Revisión médica general\",\n  \"type\": \"CONSULTATION\",\n  \"baseCost\": 50000,\n  \"durationMinutes\": 30\n}'"
+          }
+        },
+        {
+          "name": "Update service",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Consulta general (extendida)\",\n  \"description\": \"Revisión médica de 45 minutos\",\n  \"type\": \"CONSULTATION\",\n  \"baseCost\": 70000,\n  \"durationMinutes\": 45\n}"},
+            "url": {"raw": "{{baseUrl}}/api/services/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","services","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/services/srv-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Consulta general (extendida)\",\n  \"description\": \"Revisión médica de 45 minutos\",\n  \"type\": \"CONSULTATION\",\n  \"baseCost\": 70000,\n  \"durationMinutes\": 45\n}'"
+          }
+        },
+        {"name": "Get all services", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/services", "host": ["{{baseUrl}}"], "path": ["api","services"]}, "description": "curl -X GET '{{baseUrl}}/api/services'"}},
+        {"name": "Get service by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/services/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","services","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/services/srv-001'"}},
+        {"name": "Get services by type", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/services/type/{{type}}", "host": ["{{baseUrl}}"], "path": ["api","services","type","{{type}}"]}, "description": "curl -X GET '{{baseUrl}}/api/services/type/CONSULTATION'"}},
+        {"name": "Search services by name", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/services/search?name={{name}}", "host": ["{{baseUrl}}"], "path": ["api","services","search"], "query": [{"key": "name", "value": "{{name}}"}]}, "description": "curl -X GET '{{baseUrl}}/api/services/search?name=Consulta'"}},
+        {"name": "Delete service", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/services/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","services","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/services/srv-001'"}}
+      ]
+    },
+
+    {
+      "name": "Medications",
+      "item": [
+        {
+          "name": "Create medication",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"med-001\",\n  \"name\": \"Amoxicilina 500mg\",\n  \"description\": \"Antibiótico de amplio espectro\",\n  \"dosage\": \"1 tableta cada 12h\",\n  \"quantity\": 30,\n  \"unitPrice\": 1500,\n  \"expirationDate\": \"2026-12-31\",\n  \"manufacturer\": \"PharmaVet\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medications", "host": ["{{baseUrl}}"], "path": ["api","medications"]},
+            "description": "curl -X POST '{{baseUrl}}/api/medications' -H 'Content-Type: application/json' -d '{\n  \"id\": \"med-001\",\n  \"name\": \"Amoxicilina 500mg\",\n  \"description\": \"Antibiótico de amplio espectro\",\n  \"dosage\": \"1 tableta cada 12h\",\n  \"quantity\": 30,\n  \"unitPrice\": 1500,\n  \"expirationDate\": \"2026-12-31\",\n  \"manufacturer\": \"PharmaVet\"\n}'"
+          }
+        },
+        {
+          "name": "Update medication",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Amoxicilina 500mg (caja x 30)\",\n  \"description\": \"Antibiótico\",\n  \"dosage\": \"1 tableta cada 8h\",\n  \"quantity\": 50,\n  \"unitPrice\": 1400,\n  \"expirationDate\": \"2027-06-30\",\n  \"manufacturer\": \"PharmaVet\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medications/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medications","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/medications/med-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Amoxicilina 500mg (caja x 30)\",\n  \"description\": \"Antibiótico\",\n  \"dosage\": \"1 tableta cada 8h\",\n  \"quantity\": 50,\n  \"unitPrice\": 1400,\n  \"expirationDate\": \"2027-06-30\",\n  \"manufacturer\": \"PharmaVet\"\n}'"
+          }
+        },
+        {"name": "Get all medications", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medications", "host": ["{{baseUrl}}"], "path": ["api","medications"]}, "description": "curl -X GET '{{baseUrl}}/api/medications'"}},
+        {"name": "Get medication by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medications/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medications","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/medications/med-001'"}},
+        {"name": "Get expired medications", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medications/expired", "host": ["{{baseUrl}}"], "path": ["api","medications","expired"]}, "description": "curl -X GET '{{baseUrl}}/api/medications/expired'"}},
+        {"name": "Get low stock medications", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medications/low-stock?threshold={{threshold}}", "host": ["{{baseUrl}}"], "path": ["api","medications","low-stock"], "query": [{"key": "threshold", "value": "{{threshold}}"}]}, "description": "curl -X GET '{{baseUrl}}/api/medications/low-stock?threshold=10'"}},
+        {"name": "Update medication stock", "request": {"method": "PUT", "url": {"raw": "{{baseUrl}}/api/medications/{{id}}/stock?quantityChange={{quantityChange}}", "host": ["{{baseUrl}}"], "path": ["api","medications","{{id}}","stock"], "query": [{"key": "quantityChange", "value": "{{quantityChange}}"}]}, "description": "curl -X PUT '{{baseUrl}}/api/medications/med-001/stock?quantityChange=-5'"}},
+        {"name": "Delete medication", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/medications/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medications","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/medications/med-001'"}}
+      ]
+    },
+
+    {
+      "name": "Treatments",
+      "item": [
+        {
+          "name": "Create treatment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"trt-001\",\n  \"name\": \"Terapia física\",\n  \"description\": \"Sesiones de rehabilitación\",\n  \"startDate\": \"2025-01-10\",\n  \"endDate\": \"2025-02-10\",\n  \"isCompleted\": false,\n  \"cost\": 120000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/treatments", "host": ["{{baseUrl}}"], "path": ["api","treatments"]},
+            "description": "curl -X POST '{{baseUrl}}/api/treatments' -H 'Content-Type: application/json' -d '{\n  \"id\": \"trt-001\",\n  \"name\": \"Terapia física\",\n  \"description\": \"Sesiones de rehabilitación\",\n  \"startDate\": \"2025-01-10\",\n  \"endDate\": \"2025-02-10\",\n  \"isCompleted\": false,\n  \"cost\": 120000\n}'"
+          }
+        },
+        {
+          "name": "Update treatment",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Terapia física y láser\",\n  \"endDate\": \"2025-02-20\",\n  \"cost\": 150000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/treatments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","treatments","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/treatments/trt-001' -H 'Content-Type: application/json' -d '{\n  \"name\": \"Terapia física y láser\",\n  \"endDate\": \"2025-02-20\",\n  \"cost\": 150000\n}'"
+          }
+        },
+        {"name": "Get all treatments", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/treatments", "host": ["{{baseUrl}}"], "path": ["api","treatments"]}, "description": "curl -X GET '{{baseUrl}}/api/treatments'"}},
+        {"name": "Get treatment by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/treatments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","treatments","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/treatments/trt-001'"}},
+        {"name": "Get active treatments", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/treatments/active", "host": ["{{baseUrl}}"], "path": ["api","treatments","active"]}, "description": "curl -X GET '{{baseUrl}}/api/treatments/active'"}},
+        {"name": "Get expired treatments", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/treatments/expired", "host": ["{{baseUrl}}"], "path": ["api","treatments","expired"]}, "description": "curl -X GET '{{baseUrl}}/api/treatments/expired'"}},
+        {"name": "Complete treatment", "request": {"method": "PUT", "url": {"raw": "{{baseUrl}}/api/treatments/{{id}}/complete", "host": ["{{baseUrl}}"], "path": ["api","treatments","{{id}}","complete"]}, "description": "curl -X PUT '{{baseUrl}}/api/treatments/trt-001/complete'"}},
+        {"name": "Delete treatment", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/treatments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","treatments","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/treatments/trt-001'"}}
+      ]
+    },
+
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create appointment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"app-001\",\n  \"dateTime\": \"2025-01-20T10:30:00\",\n  \"pet\": { \"id\": \"pet-001\" },\n  \"veterinarian\": { \"id\": \"vet-001\" },\n  \"reason\": \"Chequeo anual\",\n  \"diagnosis\": \"N/A\",\n  \"cost\": 50000,\n  \"status\": \"SCHEDULED\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/appointments", "host": ["{{baseUrl}}"], "path": ["api","appointments"]},
+            "description": "curl -X POST '{{baseUrl}}/api/appointments' -H 'Content-Type: application/json' -d '{\n  \"id\": \"app-001\",\n  \"dateTime\": \"2025-01-20T10:30:00\",\n  \"pet\": { \"id\": \"pet-001\" },\n  \"veterinarian\": { \"id\": \"vet-001\" },\n  \"reason\": \"Chequeo anual\",\n  \"diagnosis\": \"N/A\",\n  \"cost\": 50000,\n  \"status\": \"SCHEDULED\"\n}'"
+          }
+        },
+        {
+          "name": "Update appointment",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"diagnosis\": \"Gingivitis leve\",\n  \"status\": \"COMPLETED\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/appointments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/appointments/app-001' -H 'Content-Type: application/json' -d '{\n  \"diagnosis\": \"Gingivitis leve\",\n  \"status\": \"COMPLETED\"\n}'"
+          }
+        },
+        {"name": "Get all appointments", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/appointments", "host": ["{{baseUrl}}"], "path": ["api","appointments"]}, "description": "curl -X GET '{{baseUrl}}/api/appointments'"}},
+        {"name": "Get appointment by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/appointments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/appointments/app-001'"}},
+        {"name": "Get appointments by pet", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/appointments/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","pet","{{petId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/appointments/pet/pet-001'"}},
+        {"name": "Get appointments by veterinarian", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/appointments/veterinarian/{{veterinarianId}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","veterinarian","{{veterinarianId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/appointments/veterinarian/vet-001'"}},
+        {"name": "Get appointments by status", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/appointments/status/{{status}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","status","{{status}}"]}, "description": "curl -X GET '{{baseUrl}}/api/appointments/status/SCHEDULED'"}},
+        {"name": "Delete appointment", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/appointments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","appointments","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/appointments/app-001'"}}
+      ]
+    },
+
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "Create medical record",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"mr-001\",\n  \"pet\": { \"id\": \"pet-001\" },\n  \"veterinarian\": { \"id\": \"vet-001\" },\n  \"date\": \"2025-01-20\",\n  \"diagnosis\": \"Periodontitis\",\n  \"treatmentNotes\": \"Limpieza y antibiótico\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medical-records", "host": ["{{baseUrl}}"], "path": ["api","medical-records"]},
+            "description": "curl -X POST '{{baseUrl}}/api/medical-records' -H 'Content-Type: application/json' -d '{\n  \"id\": \"mr-001\",\n  \"pet\": { \"id\": \"pet-001\" },\n  \"veterinarian\": { \"id\": \"vet-001\" },\n  \"date\": \"2025-01-20\",\n  \"diagnosis\": \"Periodontitis\",\n  \"treatmentNotes\": \"Limpieza y antibiótico\"\n}'"
+          }
+        },
+        {
+          "name": "Add treatment to record",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"trt-002\",\n  \"name\": \"Limpieza dental\",\n  \"description\": \"Profilaxis\",\n  \"startDate\": \"2025-01-21\",\n  \"endDate\": \"2025-01-21\",\n  \"isCompleted\": true,\n  \"cost\": 80000\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medical-records/{{id}}/treatments", "host": ["{{baseUrl}}"], "path": ["api","medical-records","{{id}}","treatments"]},
+            "description": "curl -X POST '{{baseUrl}}/api/medical-records/mr-001/treatments' -H 'Content-Type: application/json' -d '{\n  \"id\": \"trt-002\",\n  \"name\": \"Limpieza dental\",\n  \"description\": \"Profilaxis\",\n  \"startDate\": \"2025-01-21\",\n  \"endDate\": \"2025-01-21\",\n  \"isCompleted\": true,\n  \"cost\": 80000\n}'"
+          }
+        },
+        {
+          "name": "Add medication to record",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"med-002\",\n  \"name\": \"Enrofloxacina 50mg\",\n  \"description\": \"Antibiótico\",\n  \"dosage\": \"1 tableta diaria\",\n  \"quantity\": 10,\n  \"unitPrice\": 2000,\n  \"expirationDate\": \"2026-06-30\",\n  \"manufacturer\": \"VetLabs\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medical-records/{{id}}/medications", "host": ["{{baseUrl}}"], "path": ["api","medical-records","{{id}}","medications"]},
+            "description": "curl -X POST '{{baseUrl}}/api/medical-records/mr-001/medications' -H 'Content-Type: application/json' -d '{\n  \"id\": \"med-002\",\n  \"name\": \"Enrofloxacina 50mg\",\n  \"description\": \"Antibiótico\",\n  \"dosage\": \"1 tableta diaria\",\n  \"quantity\": 10,\n  \"unitPrice\": 2000,\n  \"expirationDate\": \"2026-06-30\",\n  \"manufacturer\": \"VetLabs\"\n}'"
+          }
+        },
+        {
+          "name": "Update medical record",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"diagnosis\": \"Periodontitis moderada\",\n  \"treatmentNotes\": \"Control en 1 mes\"\n}"},
+            "url": {"raw": "{{baseUrl}}/api/medical-records/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medical-records","{{id}}"]},
+            "description": "curl -X PUT '{{baseUrl}}/api/medical-records/mr-001' -H 'Content-Type: application/json' -d '{\n  \"diagnosis\": \"Periodontitis moderada\",\n  \"treatmentNotes\": \"Control en 1 mes\"\n}'"
+          }
+        },
+        {"name": "Get all medical records", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medical-records", "host": ["{{baseUrl}}"], "path": ["api","medical-records"]}, "description": "curl -X GET '{{baseUrl}}/api/medical-records'"}},
+        {"name": "Get medical record by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medical-records/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medical-records","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/medical-records/mr-001'"}},
+        {"name": "Get records by pet", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medical-records/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["api","medical-records","pet","{{petId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/medical-records/pet/pet-001'"}},
+        {"name": "Get records by veterinarian", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/medical-records/veterinarian/{{veterinarianId}}", "host": ["{{baseUrl}}"], "path": ["api","medical-records","veterinarian","{{veterinarianId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/medical-records/veterinarian/vet-001'"}},
+        {"name": "Delete medical record", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/medical-records/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","medical-records","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/medical-records/mr-001'"}}
+      ]
+    },
+
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "Create invoice",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "{{json}}"}],
+            "body": {"mode": "raw", "raw": "{\n  \"id\": \"inv-001\",\n  \"dateTime\": \"2025-01-20T12:00:00\",\n  \"owner\": { \"id\": \"own-001\" },\n  \"appointments\": [{ \"id\": \"app-001\" }],\n  \"treatments\": [{ \"id\": \"trt-001\" }],\n  \"medications\": [{ \"id\": \"med-001\" }],\n  \"subtotal\": 0,\n  \"tax\": 0,\n  \"total\": 0,\n  \"isPaid\": false,\n  \"paymentMethod\": null\n}"},
+            "url": {"raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api","invoices"]},
+            "description": "curl -X POST '{{baseUrl}}/api/invoices' -H 'Content-Type: application/json' -d '{\n  \"id\": \"inv-001\",\n  \"dateTime\": \"2025-01-20T12:00:00\",\n  \"owner\": { \"id\": \"own-001\" },\n  \"appointments\": [{ \"id\": \"app-001\" }],\n  \"treatments\": [{ \"id\": \"trt-001\" }],\n  \"medications\": [{ \"id\": \"med-001\" }],\n  \"subtotal\": 0,\n  \"tax\": 0,\n  \"total\": 0,\n  \"isPaid\": false,\n  \"paymentMethod\": null\n}'"
+          }
+        },
+        {"name": "Get all invoices", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api","invoices"]}, "description": "curl -X GET '{{baseUrl}}/api/invoices'"}},
+        {"name": "Get invoice by id", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/invoices/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","invoices","{{id}}"]}, "description": "curl -X GET '{{baseUrl}}/api/invoices/inv-001'"}},
+        {"name": "Get invoices by owner", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/invoices/owner/{{ownerId}}", "host": ["{{baseUrl}}"], "path": ["api","invoices","owner","{{ownerId}}"]}, "description": "curl -X GET '{{baseUrl}}/api/invoices/owner/own-001'"}},
+        {"name": "Get unpaid invoices", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/invoices/unpaid", "host": ["{{baseUrl}}"], "path": ["api","invoices","unpaid"]}, "description": "curl -X GET '{{baseUrl}}/api/invoices/unpaid'"}},
+        {"name": "Get total revenue", "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/api/invoices/revenue", "host": ["{{baseUrl}}"], "path": ["api","invoices","revenue"]}, "description": "curl -X GET '{{baseUrl}}/api/invoices/revenue'"}},
+        {"name": "Mark invoice as paid", "request": {"method": "POST", "url": {"raw": "{{baseUrl}}/api/invoices/{{id}}/pay?paymentMethod={{paymentMethod}}", "host": ["{{baseUrl}}"], "path": ["api","invoices","{{id}}","pay"], "query": [{"key": "paymentMethod", "value": "{{paymentMethod}}"}]}, "description": "curl -X POST '{{baseUrl}}/api/invoices/inv-001/pay?paymentMethod=CASH'"}},
+        {"name": "Delete invoice", "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/api/invoices/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","invoices","{{id}}"]}, "description": "curl -X DELETE '{{baseUrl}}/api/invoices/inv-001'"}}
+      ]
+    }
+  ]
+}

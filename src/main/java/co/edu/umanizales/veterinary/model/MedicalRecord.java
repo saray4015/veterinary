@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.CsvIgnore;
+import com.opencsv.bean.CsvBindByName;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +18,15 @@ import java.util.List;
 @AllArgsConstructor
 public class MedicalRecord {
     private String id;
+    @CsvIgnore
     private Pet pet;
+    @CsvIgnore
     private Veterinarian veterinarian;
+    @CsvBindByName(column = "petId")
+    private String petId;
+    @CsvBindByName(column = "veterinarianId")
+    private String veterinarianId;
+    @CsvDate("yyyy-MM-dd")
     private LocalDate date;
     private String diagnosis;
     private String treatmentNotes;
@@ -37,5 +47,19 @@ public class MedicalRecord {
 
     public void removeMedication(Medication medication) {
         medications.remove(medication);
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+        if (pet != null) {
+            this.petId = pet.getId();
+        }
+    }
+
+    public void setVeterinarian(Veterinarian veterinarian) {
+        this.veterinarian = veterinarian;
+        if (veterinarian != null) {
+            this.veterinarianId = veterinarian.getId();
+        }
     }
 }

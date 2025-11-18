@@ -1,6 +1,7 @@
-package co.edu.umanizales.veterinary.model;
+package co.edu.umanizales.veterinary.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import co.edu.umanizales.veterinary.model.AppointmentStatus;
+import co.edu.umanizales.veterinary.model.Veterinarian;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Appointment {
+public class AppointmentResponse {
     private String id;
     private LocalDateTime dateTime;
-    private Pet pet;
+    private PetWithoutBirthDate pet;
     private Veterinarian veterinarian;
     private String reason;
     private String diagnosis;
     private double cost;
     private AppointmentStatus status;
 }
-

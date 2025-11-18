@@ -104,9 +104,7 @@
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                        <arg>-Xlint:all</arg>
+                    <compilerArgs>--enable-preview
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
@@ -117,6 +115,8 @@
                         </path>
                     </annotationProcessorPaths>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             

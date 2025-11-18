@@ -1,5 +1,6 @@
 package co.edu.umanizales.veterinary.service;
 
+import co.edu.umanizales.veterinary.util.CSVManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,14 +8,18 @@ import java.util.Optional;
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
     protected List<T> entities;
     protected final String filename;
+    private final CSVManager<T> csvManager = new CSVManager<>();
 
     public BaseServiceImpl(String filename) {
         this.filename = filename;
-        this.entities = new ArrayList<>();
+        // Cargar datos existentes desde CSV si el archivo existe
+        List<T> loaded = csvManager.readFromCSV(filename, getEntityClass());
+        this.entities = (loaded != null) ? new ArrayList<>(loaded) : new ArrayList<>();
     }
 
     public void addEntity(T entity) {
         entities.add(entity);
+        csvManager.writeToCSV(filename, entities);
     }
 
     @Override
@@ -25,19 +30,28 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public Optional<T> findById(String id) {
         return entities.stream()
-                .filter(e -> e.toString().contains("id=" + id))
+                .filter(e -> {
+                    try {
+                        Object value = e.getClass().getMethod("getId").invoke(e);
+                        return id != null && id.equals(value);
+                    } catch (Exception ex) {
+                        return false;
+                    }
+                })
                 .findFirst();
     }
 
     @Override
     public T save(T entity) {
         entities.add(entity);
+        csvManager.writeToCSV(filename, entities);
         return entity;
     }
 
     @Override
     public void deleteById(String id) {
         entities.removeIf(e -> e.toString().contains("id=" + id));
+        csvManager.writeToCSV(filename, entities);
     }
 
     @Override
@@ -48,6 +62,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
     @Override
     public void deleteAll() {
         entities.clear();
+        csvManager.writeToCSV(filename, entities);
     }
 
     protected abstract Class<T> getEntityClass();

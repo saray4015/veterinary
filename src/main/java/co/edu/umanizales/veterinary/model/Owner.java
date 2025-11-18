@@ -1,5 +1,6 @@
 package co.edu.umanizales.veterinary.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class Owner extends Person {
     private List<Pet> pets = new ArrayList<>();
 

@@ -3,6 +3,8 @@ package co.edu.umanizales.veterinary.controller;
 import co.edu.umanizales.veterinary.model.Appointment;
 import co.edu.umanizales.veterinary.model.AppointmentStatus;
 import co.edu.umanizales.veterinary.service.AppointmentService;
+import co.edu.umanizales.veterinary.dto.AppointmentResponse;
+import co.edu.umanizales.veterinary.dto.PetWithoutBirthDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +50,26 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
+    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment) {
         try {
-            return new ResponseEntity<>(appointmentService.save(appointment), HttpStatus.CREATED);
+            Appointment saved = appointmentService.save(appointment);
+            AppointmentResponse resp = new AppointmentResponse(
+                saved.getId(),
+                saved.getDateTime(),
+                new PetWithoutBirthDate(
+                    saved.getPet() != null ? saved.getPet().getId() : null,
+                    saved.getPet() != null ? saved.getPet().getName() : null,
+                    saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                    saved.getPet() != null ? saved.getPet().getBreed() : null,
+                    saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                ),
+                saved.getVeterinarian(),
+                saved.getReason(),
+                saved.getDiagnosis(),
+                saved.getCost(),
+                saved.getStatus()
+            );
+            return new ResponseEntity<>(resp, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -20,6 +20,15 @@ public class MedicalRecordService extends BaseServiceImpl<MedicalRecord> {
         super("medical_records.csv");
         this.petService = petService;
         this.veterinarianService = veterinarianService;
+        // Rehidratar referencias a partir de IDs después de cargar desde CSV
+        for (MedicalRecord record : this.entities) {
+            if (record.getPet() == null && record.getPetId() != null) {
+                petService.findById(record.getPetId()).ifPresent(record::setPet);
+            }
+            if (record.getVeterinarian() == null && record.getVeterinarianId() != null) {
+                veterinarianService.findById(record.getVeterinarianId()).ifPresent(record::setVeterinarian);
+            }
+        }
     }
 
     @Override
@@ -29,30 +38,34 @@ public class MedicalRecordService extends BaseServiceImpl<MedicalRecord> {
 
     @Override
     public MedicalRecord save(MedicalRecord record) {
-        // Validar que la mascota existe
-        if (record.getPet() == null || record.getPet().getId() == null || 
-            petService.findById(record.getPet().getId()).isEmpty()) {
+        // Validar que la mascota existe (por objeto o por ID)
+        String petId = record.getPet() != null ? record.getPet().getId() : record.getPetId();
+        if (petId == null || petService.findById(petId).isEmpty()) {
             throw new IllegalArgumentException("Valid pet is required for medical record");
         }
         
-        // Validar que el veterinario existe
-        if (record.getVeterinarian() == null || record.getVeterinarian().getId() == null || 
-            veterinarianService.findById(record.getVeterinarian().getId()).isEmpty()) {
+        // Validar que el veterinario existe (por objeto o por ID)
+        String vetId = record.getVeterinarian() != null ? record.getVeterinarian().getId() : record.getVeterinarianId();
+        if (vetId == null || veterinarianService.findById(vetId).isEmpty()) {
             throw new IllegalArgumentException("Valid veterinarian is required for medical record");
         }
         
+        // Asegurar referencias sincronizadas
+        petService.findById(petId).ifPresent(record::setPet);
+        veterinarianService.findById(vetId).ifPresent(record::setVeterinarian);
+
         return super.save(record);
     }
 
     public List<MedicalRecord> findByPetId(String petId) {
         return entities.stream()
-                .filter(record -> petId.equals(record.getPet().getId()))
+                .filter(record -> petId.equals(record.getPetId()))
                 .toList();
     }
 
     public List<MedicalRecord> findByVeterinarianId(String veterinarianId) {
         return entities.stream()
-                .filter(record -> veterinarianId.equals(record.getVeterinarian().getId()))
+                .filter(record -> veterinarianId.equals(record.getVeterinarianId()))
                 .toList();
     }
 

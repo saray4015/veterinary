@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VeterinarianService extends BaseServiceImpl<Veterinarian> {
-    
+
     public VeterinarianService() {
         super("veterinarians.csv");
     }
@@ -21,7 +22,7 @@ public class VeterinarianService extends BaseServiceImpl<Veterinarian> {
 
     public Optional<Veterinarian> findByLicenseNumber(String licenseNumber) {
         return entities.stream()
-                .filter(v -> licenseNumber.equals(v.getLicenseNumber()))
+                .filter(v -> licenseNumber != null && licenseNumber.equals(v.getLicenseNumber()))
                 .findFirst();
     }
 
@@ -29,23 +30,25 @@ public class VeterinarianService extends BaseServiceImpl<Veterinarian> {
         return entities.stream()
                 .filter(v -> v.getSpecialties().stream()
                         .anyMatch(s -> s.getId().equals(specialtyId)))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void addSpecialty(String veterinarianId, Specialty specialty) {
         findById(veterinarianId).ifPresent(v -> {
-            v.addSpecialty(specialty);
+            if (specialty != null && specialty.getId() != null) {
+                boolean exists = v.getSpecialties().stream()
+                        .anyMatch(s -> specialty.getId().equals(s.getId()));
+                if (!exists) {
+                    v.addSpecialty(specialty);
+                }
+            }
             save(v);
         });
     }
 
     public void removeSpecialty(String veterinarianId, String specialtyId) {
         findById(veterinarianId).ifPresent(v -> {
-            v.setSpecialties(
-                v.getSpecialties().stream()
-                    .filter(s -> !s.getId().equals(specialtyId))
-                    .toList()
-            );
+            v.getSpecialties().removeIf(s -> s.getId().equals(specialtyId));
             save(v);
         });
     }

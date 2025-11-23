@@ -21,17 +21,20 @@ public class TreatmentService extends BaseServiceImpl<Treatment> {
     public List<Treatment> findActiveTreatments() {
         LocalDate today = LocalDate.now();
         return entities.stream()
-                .filter(treatment -> !treatment.isCompleted() && 
-                                   !today.isBefore(treatment.getStartDate()) && 
-                                   !today.isAfter(treatment.getEndDate()))
+                .filter(treatment -> !treatment.isCompleted()
+                        && treatment.getStartDate() != null
+                        && treatment.getEndDate() != null
+                        && !today.isBefore(treatment.getStartDate())
+                        && !today.isAfter(treatment.getEndDate()))
                 .toList();
     }
 
     public List<Treatment> findExpiredTreatments() {
         LocalDate today = LocalDate.now();
         return entities.stream()
-                .filter(treatment -> !treatment.isCompleted() && 
-                                   today.isAfter(treatment.getEndDate()))
+                .filter(treatment -> !treatment.isCompleted()
+                        && treatment.getEndDate() != null
+                        && today.isAfter(treatment.getEndDate()))
                 .toList();
     }
 

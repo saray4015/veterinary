@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 public class MedicalRecordService extends BaseServiceImpl<MedicalRecord> {
@@ -38,21 +39,62 @@ public class MedicalRecordService extends BaseServiceImpl<MedicalRecord> {
 
     @Override
     public MedicalRecord save(MedicalRecord record) {
-        // Validar que la mascota existe (por objeto o por ID)
+        // Asegurar ID
+        if (record.getId() == null || record.getId().isBlank()) {
+            record.setId(java.util.UUID.randomUUID().toString());
+        }
+
+        // Permitir entrada por objetos o por IDs escalares
         String petId = record.getPet() != null ? record.getPet().getId() : record.getPetId();
-        if (petId == null || petService.findById(petId).isEmpty()) {
-            throw new IllegalArgumentException("Valid pet is required for medical record");
-        }
-        
-        // Validar que el veterinario existe (por objeto o por ID)
         String vetId = record.getVeterinarian() != null ? record.getVeterinarian().getId() : record.getVeterinarianId();
-        if (vetId == null || veterinarianService.findById(vetId).isEmpty()) {
-            throw new IllegalArgumentException("Valid veterinarian is required for medical record");
+
+        // Merge con existente si aplica (update parcial)
+        findById(record.getId()).ifPresent(existing -> {
+            if (petId == null) {
+                // Completar desde existente
+                if (record.getPet() == null) record.setPet(existing.getPet());
+                if (record.getPetId() == null) record.setPetId(existing.getPetId());
+            }
+            if (vetId == null) {
+                if (record.getVeterinarian() == null) record.setVeterinarian(existing.getVeterinarian());
+                if (record.getVeterinarianId() == null) record.setVeterinarianId(existing.getVeterinarianId());
+            }
+            if (record.getDate() == null) record.setDate(existing.getDate());
+            if (record.getDiagnosis() == null) record.setDiagnosis(existing.getDiagnosis());
+            if (record.getTreatmentNotes() == null) record.setTreatmentNotes(existing.getTreatmentNotes());
+            if (record.getTreatments() == null || record.getTreatments().isEmpty()) record.setTreatments(existing.getTreatments());
+            if (record.getMedications() == null || record.getMedications().isEmpty()) record.setMedications(existing.getMedications());
+            // Reemplazar existente para evitar duplicados
+            entities.removeIf(r -> {
+                try {
+                    Object value = r.getClass().getMethod("getId").invoke(r);
+                    return record.getId().equals(value);
+                } catch (Exception ex) { return false; }
+            });
+        });
+
+        // Hidratar si existen
+        // Recalcular IDs finales a partir del propio record tras el merge
+        String finalPetId = record.getPet() != null ? record.getPet().getId() : (record.getPetId());
+        String finalVetId = record.getVeterinarian() != null ? record.getVeterinarian().getId() : (record.getVeterinarianId());
+
+        if (finalPetId != null) {
+            final String pid = finalPetId; // effectively final for lambda
+            petService.findById(pid).ifPresent(record::setPet);
         }
-        
-        // Asegurar referencias sincronizadas
-        petService.findById(petId).ifPresent(record::setPet);
-        veterinarianService.findById(vetId).ifPresent(record::setVeterinarian);
+        if (finalVetId != null) {
+            final String vid = finalVetId;
+            veterinarianService.findById(vid).ifPresent(record::setVeterinarian);
+        }
+
+        // Asignar siempre IDs escalares para CSV
+        record.setPetId(finalPetId);
+        record.setVeterinarianId(finalVetId);
+
+        // Fecha por defecto hoy si no viene
+        if (record.getDate() == null) {
+            record.setDate(LocalDate.now());
+        }
 
         return super.save(record);
     }

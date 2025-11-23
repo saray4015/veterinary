@@ -16,10 +16,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pet {
+    @CsvBindByName(column = "id")
     private String id;
+    @CsvBindByName(column = "name")
     private String name;
+    @CsvBindByName(column = "specie")
     private AnimalSpecies specie;
+    @CsvBindByName(column = "breed")
     private String breed;
+    @CsvBindByName(column = "birthDate")
     @CsvDate("yyyy-MM-dd")
     private LocalDate birthDate;
     @CsvIgnore

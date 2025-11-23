@@ -33,7 +33,9 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
                 .filter(e -> {
                     try {
                         Object value = e.getClass().getMethod("getId").invoke(e);
-                        return id != null && id.equals(value);
+                        String sid = (id != null) ? id.trim() : null;
+                        String val = (value != null) ? value.toString().trim() : null;
+                        return sid != null && val != null && sid.equalsIgnoreCase(val);
                     } catch (Exception ex) {
                         return false;
                     }

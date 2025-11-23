@@ -1,5 +1,6 @@
 package co.edu.umanizales.veterinary.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedicalRecord {
+    @CsvBindByName(column = "id")
     private String id;
     @CsvIgnore
     private Pet pet;
@@ -26,11 +29,16 @@ public class MedicalRecord {
     private String petId;
     @CsvBindByName(column = "veterinarianId")
     private String veterinarianId;
+    @CsvBindByName(column = "date")
     @CsvDate("yyyy-MM-dd")
     private LocalDate date;
+    @CsvBindByName(column = "diagnosis")
     private String diagnosis;
+    @CsvBindByName(column = "treatmentNotes")
     private String treatmentNotes;
+    @CsvIgnore
     private List<Treatment> treatments = new ArrayList<>();
+    @CsvIgnore
     private List<Medication> medications = new ArrayList<>();
 
     public void addTreatment(Treatment treatment) {

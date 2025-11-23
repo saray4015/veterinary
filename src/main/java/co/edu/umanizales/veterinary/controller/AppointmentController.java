@@ -4,6 +4,7 @@ import co.edu.umanizales.veterinary.model.Appointment;
 import co.edu.umanizales.veterinary.model.AppointmentStatus;
 import co.edu.umanizales.veterinary.service.AppointmentService;
 import co.edu.umanizales.veterinary.dto.AppointmentResponse;
+import co.edu.umanizales.veterinary.dto.AppointmentRequest;
 import co.edu.umanizales.veterinary.dto.PetWithoutBirthDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import co.edu.umanizales.veterinary.model.Pet;
+import co.edu.umanizales.veterinary.model.Veterinarian;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -22,37 +26,156 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Appointment>> getAllAppointments() {
-        return new ResponseEntity<>(appointmentService.findAll(), HttpStatus.OK);
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
+        List<Appointment> list = appointmentService.findAll();
+        List<AppointmentResponse> resp = list.stream()
+                .map(saved -> new AppointmentResponse(
+                        saved.getId(),
+                        saved.getDateTime(),
+                        new PetWithoutBirthDate(
+                                saved.getPet() != null ? saved.getPet().getId() : null,
+                                saved.getPet() != null ? saved.getPet().getName() : null,
+                                saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                                saved.getPet() != null ? saved.getPet().getBreed() : null,
+                                saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                        ),
+                        saved.getVeterinarian(),
+                        saved.getReason(),
+                        saved.getDiagnosis(),
+                        saved.getCost(),
+                        saved.getStatus()
+                ))
+                .toList();
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getAppointmentById(@PathVariable String id) {
+    public ResponseEntity<?> getAppointmentById(@PathVariable String id) {
+        // Normalizar posibles comillas o espacios pegados al ID
+        String tmp = (id != null) ? id.trim() : null;
+        final String normalizedId = (tmp != null && tmp.length() >= 2 &&
+                ((tmp.startsWith("\"") && tmp.endsWith("\"")) ||
+                 (tmp.startsWith("'") && tmp.endsWith("'"))))
+                ? tmp.substring(1, tmp.length() - 1).trim()
+                : tmp;
+
         return appointmentService.findById(id)
-                .map(appointment -> new ResponseEntity<>(appointment, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .or(() -> appointmentService.findById(normalizedId))
+                .<ResponseEntity<?>>map(appointment -> new ResponseEntity<>(appointment, HttpStatus.OK))
+                .orElseGet(() -> {
+                    java.util.List<String> ids = appointmentService.findAll().stream()
+                            .map(Appointment::getId)
+                            .filter(java.util.Objects::nonNull)
+                            .toList();
+                    String msg = "Appointment not found: '" + id + "'. Available IDs: " + ids;
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+                });
     }
 
-    @GetMapping("/pet/{petId}")
-    public ResponseEntity<List<Appointment>> getAppointmentsByPet(@PathVariable String petId) {
-        return new ResponseEntity<>(appointmentService.findByPetId(petId), HttpStatus.OK);
+    @GetMapping(value = "/pet/{petId}", produces = "application/json")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByPet(@PathVariable String petId) {
+        List<Appointment> list = appointmentService.findByPetId(petId);
+        List<AppointmentResponse> resp = list.stream()
+                .map(saved -> new AppointmentResponse(
+                        saved.getId(),
+                        saved.getDateTime(),
+                        new PetWithoutBirthDate(
+                                saved.getPet() != null ? saved.getPet().getId() : null,
+                                saved.getPet() != null ? saved.getPet().getName() : null,
+                                saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                                saved.getPet() != null ? saved.getPet().getBreed() : null,
+                                saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                        ),
+                        saved.getVeterinarian(),
+                        saved.getReason(),
+                        saved.getDiagnosis(),
+                        saved.getCost(),
+                        saved.getStatus()
+                ))
+                .toList();
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @GetMapping("/veterinarian/{veterinarianId}")
-    public ResponseEntity<List<Appointment>> getAppointmentsByVeterinarian(@PathVariable String veterinarianId) {
-        return new ResponseEntity<>(appointmentService.findByVeterinarianId(veterinarianId), HttpStatus.OK);
+    @GetMapping(value = "/veterinarian/{veterinarianId}", produces = "application/json")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByVeterinarian(@PathVariable String veterinarianId) {
+        List<Appointment> list = appointmentService.findByVeterinarianId(veterinarianId);
+        List<AppointmentResponse> resp = list.stream()
+                .map(saved -> new AppointmentResponse(
+                        saved.getId(),
+                        saved.getDateTime(),
+                        new PetWithoutBirthDate(
+                                saved.getPet() != null ? saved.getPet().getId() : null,
+                                saved.getPet() != null ? saved.getPet().getName() : null,
+                                saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                                saved.getPet() != null ? saved.getPet().getBreed() : null,
+                                saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                        ),
+                        saved.getVeterinarian(),
+                        saved.getReason(),
+                        saved.getDiagnosis(),
+                        saved.getCost(),
+                        saved.getStatus()
+                ))
+                .toList();
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Appointment>> getAppointmentsByStatus(@PathVariable AppointmentStatus status) {
-        return new ResponseEntity<>(appointmentService.findByStatus(status), HttpStatus.OK);
+    @GetMapping(value = "/status/{status}", produces = "application/json")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByStatus(@PathVariable AppointmentStatus status) {
+        List<Appointment> list = appointmentService.findByStatus(status);
+        List<AppointmentResponse> resp = list.stream()
+                .map(saved -> new AppointmentResponse(
+                        saved.getId(),
+                        saved.getDateTime(),
+                        new PetWithoutBirthDate(
+                                saved.getPet() != null ? saved.getPet().getId() : null,
+                                saved.getPet() != null ? saved.getPet().getName() : null,
+                                saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                                saved.getPet() != null ? saved.getPet().getBreed() : null,
+                                saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                        ),
+                        saved.getVeterinarian(),
+                        saved.getReason(),
+                        saved.getDiagnosis(),
+                        saved.getCost(),
+                        saved.getStatus()
+                ))
+                .toList();
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody Appointment appointment) {
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequest request) {
         try {
-            Appointment saved = appointmentService.save(appointment);
+            Appointment toSave = new Appointment();
+            toSave.setId(request.getId());
+            if (request.getDateTime() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dateTime is required in format yyyy-MM-dd'T'HH:mm:ss");
+            }
+            toSave.setDateTime(LocalDateTime.parse(request.getDateTime()));
+            // Mapear Pet desde id o objeto anidado
+            String petId = request.getPetId() != null ? request.getPetId() :
+                    (request.getPet() != null ? request.getPet().getId() : null);
+            if (petId != null) {
+                Pet p = new Pet();
+                p.setId(petId);
+                toSave.setPet(p);
+            }
+            // Mapear Veterinarian desde id o objeto anidado
+            String vetId = request.getVeterinarianId() != null ? request.getVeterinarianId() :
+                    (request.getVeterinarian() != null ? request.getVeterinarian().getId() : null);
+            if (vetId != null) {
+                Veterinarian v = new Veterinarian();
+                v.setId(vetId);
+                toSave.setVeterinarian(v);
+            }
+            toSave.setReason(request.getReason());
+            toSave.setDiagnosis(request.getDiagnosis());
+            toSave.setCost(request.getCost() != null ? request.getCost() : 0.0);
+            toSave.setStatus(request.getStatus() != null ? request.getStatus() : AppointmentStatus.SCHEDULED);
+
+            Appointment saved = appointmentService.save(toSave);
             AppointmentResponse resp = new AppointmentResponse(
                 saved.getId(),
                 saved.getDateTime(),
@@ -71,20 +194,133 @@ public class AppointmentController {
             );
             return new ResponseEntity<>(resp, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> updateAppointment(@PathVariable String id, @RequestBody Appointment appointment) {
+    public ResponseEntity<?> updateAppointment(@PathVariable String id, @RequestBody AppointmentRequest request) {
         if (appointmentService.findById(id).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            // Si no existe, crear (upsert)
+            try {
+                Appointment toCreate = new Appointment();
+                toCreate.setId(id);
+                if (request.getDateTime() == null) {
+                    toCreate.setDateTime(LocalDateTime.now());
+                } else {
+                    toCreate.setDateTime(LocalDateTime.parse(request.getDateTime()));
+                }
+
+                String petIdCreate = request.getPetId() != null ? request.getPetId() :
+                        (request.getPet() != null ? request.getPet().getId() : null);
+                if (petIdCreate != null) {
+                    Pet p = new Pet();
+                    p.setId(petIdCreate);
+                    toCreate.setPet(p);
+                }
+
+                String vetIdCreate = request.getVeterinarianId() != null ? request.getVeterinarianId() :
+                        (request.getVeterinarian() != null ? request.getVeterinarian().getId() : null);
+                if (vetIdCreate != null) {
+                    Veterinarian v = new Veterinarian();
+                    v.setId(vetIdCreate);
+                    toCreate.setVeterinarian(v);
+                }
+
+                toCreate.setReason(request.getReason());
+                toCreate.setDiagnosis(request.getDiagnosis());
+                toCreate.setCost(request.getCost() != null ? request.getCost() : 0.0);
+                toCreate.setStatus(request.getStatus() != null ? request.getStatus() : AppointmentStatus.SCHEDULED);
+
+                Appointment saved = appointmentService.save(toCreate);
+                AppointmentResponse resp = new AppointmentResponse(
+                        saved.getId(),
+                        saved.getDateTime(),
+                        new PetWithoutBirthDate(
+                                saved.getPet() != null ? saved.getPet().getId() : null,
+                                saved.getPet() != null ? saved.getPet().getName() : null,
+                                saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                                saved.getPet() != null ? saved.getPet().getBreed() : null,
+                                saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                        ),
+                        saved.getVeterinarian(),
+                        saved.getReason(),
+                        saved.getDiagnosis(),
+                        saved.getCost(),
+                        saved.getStatus()
+                );
+                return new ResponseEntity<>(resp, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
-        appointment.setId(id);
+        // Partir del existente para soportar actualizaciones parciales
+        Appointment existing = appointmentService.findById(id).get();
+        Appointment toSave = new Appointment();
+        toSave.setId(id);
+        toSave.setDateTime(request.getDateTime() != null
+                ? LocalDateTime.parse(request.getDateTime())
+                : existing.getDateTime());
+
+        // Pet: mantener si no se envía; reemplazar si llega id
+        String petId = request.getPetId() != null ? request.getPetId() :
+                (request.getPet() != null ? request.getPet().getId() : null);
+        if (petId != null) {
+            Pet p = new Pet();
+            p.setId(petId);
+            toSave.setPet(p);
+        } else {
+            toSave.setPet(existing.getPet());
+        }
+
+        // Veterinarian: mantener si no se envía; reemplazar si llega id
+        String vetId = request.getVeterinarianId() != null ? request.getVeterinarianId() :
+                (request.getVeterinarian() != null ? request.getVeterinarian().getId() : null);
+        if (vetId != null) {
+            Veterinarian v = new Veterinarian();
+            v.setId(vetId);
+            toSave.setVeterinarian(v);
+        } else {
+            toSave.setVeterinarian(existing.getVeterinarian());
+        }
+
+        // Asegurar IDs escalares para salvar correctamente incluso si los objetos están null
+        if (toSave.getPet() != null && toSave.getPet().getId() != null) {
+            toSave.setPetId(toSave.getPet().getId());
+        } else {
+            toSave.setPetId(existing.getPetId());
+        }
+        if (toSave.getVeterinarian() != null && toSave.getVeterinarian().getId() != null) {
+            toSave.setVeterinarianId(toSave.getVeterinarian().getId());
+        } else {
+            toSave.setVeterinarianId(existing.getVeterinarianId());
+        }
+
+        toSave.setReason(request.getReason() != null ? request.getReason() : existing.getReason());
+        toSave.setDiagnosis(request.getDiagnosis() != null ? request.getDiagnosis() : existing.getDiagnosis());
+        toSave.setCost(request.getCost() != null ? request.getCost() : existing.getCost());
+        toSave.setStatus(request.getStatus() != null ? request.getStatus() : existing.getStatus());
         try {
-            return new ResponseEntity<>(appointmentService.save(appointment), HttpStatus.OK);
+            Appointment saved = appointmentService.save(toSave);
+            AppointmentResponse resp = new AppointmentResponse(
+                    saved.getId(),
+                    saved.getDateTime(),
+                    new PetWithoutBirthDate(
+                            saved.getPet() != null ? saved.getPet().getId() : null,
+                            saved.getPet() != null ? saved.getPet().getName() : null,
+                            saved.getPet() != null ? saved.getPet().getSpecie() : null,
+                            saved.getPet() != null ? saved.getPet().getBreed() : null,
+                            saved.getPet() != null ? saved.getPet().getOwnerId() : null
+                    ),
+                    saved.getVeterinarian(),
+                    saved.getReason(),
+                    saved.getDiagnosis(),
+                    saved.getCost(),
+                    saved.getStatus()
+            );
+            return new ResponseEntity<>(resp, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

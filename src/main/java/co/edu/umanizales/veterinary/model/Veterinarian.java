@@ -1,5 +1,6 @@
 package co.edu.umanizales.veterinary.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opencsv.bean.CsvIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Veterinarian extends Person {
 
     private String licenseNumber;

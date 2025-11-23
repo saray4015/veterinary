@@ -31,6 +31,11 @@ public class PetService extends BaseServiceImpl<Pet> {
 
     @Override
     public Pet save(Pet pet) {
+        // Generar ID si falta
+        if (pet.getId() == null || pet.getId().isBlank()) {
+            pet.setId(java.util.UUID.randomUUID().toString());
+        }
+
         // Verificar que el dueño existe usando owner o ownerId
         String ownerId = null;
         if (pet.getOwner() != null && pet.getOwner().getId() != null) {
@@ -43,6 +48,8 @@ public class PetService extends BaseServiceImpl<Pet> {
             Optional<Owner> owner = ownerService.findById(ownerId);
             if (owner.isPresent()) {
                 pet.setOwner(owner.get());
+                // Reemplazar existente si tiene el mismo id para evitar duplicados
+                findById(pet.getId()).ifPresent(existing -> entities.remove(existing));
                 return super.save(pet);
             }
             throw new IllegalArgumentException("Owner not found: " + ownerId);
